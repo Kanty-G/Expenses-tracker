@@ -1,15 +1,15 @@
 import streamlit as st
 import pandas as pd
 from app.data_io import load_expenses
-from app.caregorize import apply_rules, load_feedback, merge_feedback, save_feedback
-from app.metrics import total_spend, expenses_count, top_category, monthy_spend
+from app.categorize import apply_rules, load_feedback, merge_feedback, save_feedback
+from app.metrics import total_spend, expenses_count, top_category, monthly_spend
 
 
 st.set_page_config(page_title="Expenses Tracker", layout="wide")
 st.title("💸 Expenses Tracker")
 
 #load page
-df = load_data("data/expenses_sample.csv")
+df = load_expenses("data/expenses_sample.csv")
 
 # Categorize (rules + saved feedback)
 df = apply_rules(df)
@@ -37,7 +37,7 @@ merchants = st.sidebar.text_input("Merchant contains (optional)", "")
 
 # ---------- Build mask robustly ----------
 mask = pd.Series(True, index=df.index)
-mask &= df["order_date"].dt.date.between(start_d, end_d)
+mask &= df["date"].dt.date.between(start_d, end_d)
 
 # Category filter (only if user picked some)
 if cats:
@@ -54,7 +54,7 @@ f = df.loc[mask]
 # -------- KPIs --------
 c1, c2, c3 = st.columns(3)
 c1.metric("Total Spend", f"${total_spend(f):,.2f}")
-c2.metric("Transactions", f"{tx_count(f)}")
+c2.metric("Transactions", f"{expenses_count(f)}")
 tc, amt = top_category(f)
 c3.metric("Top Category", f"{tc}", delta=f"${amt:,.2f}")
 

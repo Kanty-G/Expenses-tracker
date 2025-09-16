@@ -13,7 +13,7 @@ KEYWORDS_MAP = {
     "Entertainment": [r"\bmovie\b", r"\btheater\b", r"\bconcert\b", r"\bmuseum\b", r"\bfestival\b"],
     "Subscriptions": [r"\bnetflix\b", r"\bspotify\b", r"\bhulu\b", r"\bdisney\+?\b", r"\bprime\b", r"\byoutube\s*premium\b", r"\bapple\s*music\b"],
     "Utilities": [r"\bhydro\b", r"\bbell\b", r"\bgas\b", r"\binternet\b", r"\bvideotron\b", r"\brogers\b", r"\btelus\b", r"\bsasktel\b"],
-    "Shopping": [r"\bamazon\b", r"\beBay\b", r"\betsy\b", r"\bmall\b", r"\bclothing\b", r"\bshoes\b", r"\bfashion\b", r"\bh&m\b"].
+    "Shopping": [r"\bamazon\b", r"\beBay\b", r"\betsy\b", r"\bmall\b", r"\bclothing\b", r"\bshoes\b", r"\bfashion\b", r"\bh&m\b"],
 }
 
 FEEDBACK_PATH = "data/category_feedback.csv"
