@@ -1,0 +1,11 @@
+id,date,description,merchant,amount,category
+1,2025-07-02,Uber trip,Uber,14.50,
+2,2025-07-03,Starbucks latte,Starbucks,5.75,
+3,2025-07-05,Metro groceries,Metro,62.10,
+4,2025-08-01,Amazon order,Amazon,39.99,
+5,2025-08-15,Hydro bill,Hydro Quebec,88.20,
+6,2025-09-01,Tim Hortons,Tim Hortons,4.10,
+7,2025-09-02,Costco warehouse,Costco,120.00,
+8,2025-09-03,Netflix subscription,Netflix,15.49,
+9,2025-09-04,Uber trip,Uber,18.30,
+10,2025-09-05,Restaurant dinner,Sushi Miku,42.00,
