@@ -4,11 +4,11 @@ A simple and intuitive tool to track your expenses, built with **Python** and **
 
 
 ## Tech Stack
-- **Python 3.7+** — core programming language  
-- **Streamlit** — interactive web app framework  
-- **Pandas / NumPy** — data manipulation and analysis  
-- **Altair / Matplotlib** — data visualization  
-- **CSV** — lightweight storage for expenses and feedback  
+- **Python 3.7+**:core programming language  
+- **Streamlit**:interactive web app framework  
+- **Pandas / NumPy**: data manipulation and analysis  
+- **Altair / Matplotlib**:data visualization  
+- **CSV** :lightweight storage for expenses and feedback  
 
 
 
