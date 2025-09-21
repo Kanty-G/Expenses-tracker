@@ -9,3 +9,6 @@ env/
 
 # OS cruft
 .DS_Store
+
+# Log files
+*.log
