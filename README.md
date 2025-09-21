@@ -4,7 +4,7 @@ A simple and intuitive tool to track your expenses, built with **Python** and **
 
 ---
 
-## ✨ Features
+## Features
 - Categorize expenses for better organization  
 - Filter by date, merchant, or category  
 - View expense summaries and KPIs  
@@ -13,7 +13,7 @@ A simple and intuitive tool to track your expenses, built with **Python** and **
 
 ---
 
-## 📦 Prerequisites
+## Prerequisites
 - Python 3.7 or higher  
 - `pip` (Python package manager)  
 
@@ -27,11 +27,11 @@ Follow these steps to set up and run the project on your local machine:
 ```bash
 git clone https://github.com/your-username/expenses-tracker.git
 cd expenses-tracker
-
+---
 python3 -m venv .venv
 source .venv/bin/activate
-
+---
 pip install -r requirements.txt
 
-
+---
 python -m streamlit run app/ui.py
