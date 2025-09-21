@@ -28,9 +28,7 @@ A simple and intuitive tool to track your expenses, built with **Python** and **
 
 
 
-## Getting Started
-
-Follow these steps to set up and run the project on your local machine:
+Steps to set up and run the project on your local machine:
 
 ### 1. Clone the Repository
 ```bash
