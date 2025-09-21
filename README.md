@@ -2,7 +2,6 @@
 
 A simple and intuitive tool to track your expenses, built with **Python** and **Streamlit**.
 
----
 
 ## Tech Stack
 - **Python 3.7+** — core programming language  
