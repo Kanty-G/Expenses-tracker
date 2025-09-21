@@ -2,7 +2,6 @@
 
 A simple and intuitive tool to track your expenses, built with Python and Streamlit.
 
----
 
 ## Features
 
@@ -11,7 +10,7 @@ A simple and intuitive tool to track your expenses, built with Python and Stream
 - View expense summaries and analytics.
 - User-friendly interface powered by Streamlit.
 
----
+
 
 ## Prerequisites
 
@@ -19,7 +18,6 @@ A simple and intuitive tool to track your expenses, built with Python and Stream
 - Python 3.7 or higher
 - pip (Python package manager)
 
----
 
 ## Getting Started
 
