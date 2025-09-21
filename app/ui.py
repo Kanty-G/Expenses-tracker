@@ -22,7 +22,7 @@ date_sel = st.sidebar.date_input("Date range", (min_d, max_d))
 
 
 
-# Handle single-date vs range gracefully
+# Handle single-date vs range 
 if isinstance(date_sel, tuple) and len(date_sel) == 2:
     start_d, end_d = date_sel
 else:

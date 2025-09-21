@@ -48,6 +48,7 @@ def merge_feedback(df: pd.DataFrame, fb: pd.DataFrame) -> pd.DataFrame:
 
 def save_feedback(rows: pd.DataFrame) -> None:
     # rows must have ["id","category"]
+    #to ne changed
     if rows.empty:
         return
     exists = os.path.exists(FEEDBACK_PATH)

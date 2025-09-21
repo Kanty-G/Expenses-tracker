@@ -12,7 +12,7 @@ def load_expenses(path: str) -> pd.DataFrame:
     if df["date"].isna().any():
         raise ValueError("Some dates could not be parsed. Check 'date' format (YYYY-MM-DD).")
 
-    #Amount: expenses should be positive; if negatives, flip sign
+    #Amount:expenses should be positive; if negatives, flip sign
     df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
     if df["amount"].isna().any():
         raise ValueError("Some amounts are not numeric.")

@@ -17,6 +17,7 @@ def top_category(df: pd.DataFrame) -> tuple[str, float] | tuple[str, float]:
         return ("N/A", 0.0)
     return (k.index[0] if pd.notna(k.index[0]) else "Uncategorized", float(k.iloc[0]))
 
+# Function to get monthly spend
 def monthly_spend(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame(columns=["month", "amount"])
