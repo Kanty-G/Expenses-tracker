@@ -1,15 +1,28 @@
 import pandas as pd
 
-REQUIRED_COLS = ["order_id","order_date","customer_id","product","category","qty","unit_price","city","channel"]
+REQUIRED_COLS = ["id","date","description","amount"]
 
-def load_data(path: str) -> pd.DataFrame:
+def load_expenses(path: str) -> pd.DataFrame:
     df = pd.read_csv(path)
     missing = [c for c in REQUIRED_COLS if c not in df.columns]
     if missing:
-        raise ValueError(f"Missing columns: {missing}")
-    df["order_date"] = pd.to_datetime(df["order_date"], errors="coerce")
-    if df["order_date"].isna().any():
-        raise ValueError("Unparseable dates in order_date.")
-    if (df["qty"] < 0).any() or (df["unit_price"] < 0).any():
-        raise ValueError("Negative values in qty/unit_price.")
+        raise ValueError(f"Missing requires columns: {missing}")
+    # Normalize types
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    if df["date"].isna().any():
+        raise ValueError("Some dates could not be parsed. Check 'date' format (YYYY-MM-DD).")
+
+    #Amount:expenses should be positive; if negatives, flip sign
+    df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
+    if df["amount"].isna().any():
+        raise ValueError("Some amounts are not numeric.")
+    df.loc[df["amount"] < 0, "amount"] = -df.loc[df["amount"] < 0, "amount"]
+
+    # Optional columns
+    if "merchant" not in df.columns:
+        df["merchant"] = df["description"].fillna("")
+
+    if "category" not in df.columns:
+        df["category"] = pd.NA
+
     return df

@@ -1,77 +1,96 @@
 import streamlit as st
 import pandas as pd
-from app.data_io import load_data
-from app.metrics import (add_revenue, total_revenue, monthly_revenue,
-                         avg_spending, orders_per_customer,
-                         top_products)
+from app.data_io import load_expenses
+from app.categorize import apply_rules, load_feedback, merge_feedback, save_feedback
+from app.metrics import total_spend, expenses_count, top_category, monthly_spend
 
-st.set_page_config(page_title="Sales KPI Tracker", layout="wide")
-st.title("Sales KPI Tracker")
 
-df = load_data("data/sales_sample.csv")
+st.set_page_config(page_title="Expenses Tracker", layout="wide")
+st.title("💸 Expenses Tracker")
 
-#sidebar layouts
+#load page
+df = load_expenses("data/expenses_sample.csv")
 
-# Safer date defaults (date_input prefers date objects)
-min_d = df["order_date"].min().date()
-max_d = df["order_date"].max().date()
+# Categorize (rules + saved feedback)
+df = apply_rules(df)
+fb = load_feedback()
+df = merge_feedback(df, fb)
 
+#------- Sidebar filters --------
+min_d, max_d = df["date"].min().date(), df["date"].max().date()
 date_sel = st.sidebar.date_input("Date range", (min_d, max_d))
 
 
-# Handle single-date vs range gracefully
+
+# Handle single-date vs range 
 if isinstance(date_sel, tuple) and len(date_sel) == 2:
     start_d, end_d = date_sel
 else:
     start_d = end_d = date_sel
 
-# Category multiselect (no empty-list errors)
-all_categories = sorted(df["category"].dropna().unique().tolist())
-cats = st.sidebar.multiselect("Category", all_categories, default=[])
+cats = st.sidebar.multiselect(
+    "Category",
+    sorted(df["category_final"].dropna().unique().tolist() + ["Uncategorized"]),
+)
 
-
-all_channels = sorted(df["channel"].dropna().unique().tolist())
-channels = st.sidebar.multiselect("Channel", all_channels, default=all_channels)
+merchants = st.sidebar.text_input("Merchant contains (optional)", "")
 
 # ---------- Build mask robustly ----------
 mask = pd.Series(True, index=df.index)
-
-# Date filter
-mask &= df["order_date"].dt.date.between(start_d, end_d)
+mask &= df["date"].dt.date.between(start_d, end_d)
 
 # Category filter (only if user picked some)
 if cats:
-    mask &= df["category"].isin(cats)
+    # normalize nulls as "Uncategorized"
+    cat_series = df["category_final"].fillna("Uncategorized")
+    mask &= cat_series.isin(cats)
 
-# Channel filter (if user deselected some, filter to remaining)
-# If channels is empty, the result will be empty — which is fine/expected.
-mask &= df["channel"].isin(channels)
+if merchants.strip():
+    key = merchants.strip().lower()
+    mask &= df["merchant"].str.lower().str.contains(key)
 
-filtered = df.loc[mask]
+f = df.loc[mask]
 
-#--KPIS--
-if filtered.empty:
-    st.warning("No data for the selected filters.")
-else:
-    m1,m2,m3 = st.columns(3)
-    m1.metric( "Total Revenue", f"${total_revenue(filtered):,.2f}")
-    m2.metric("Average spending per customer", f"${avg_spending(filtered):,.2f}")
-    m3.metric("Orders per customer", f"{orders_per_customer(filtered):,.2f}")
+# -------- KPIs --------
+c1, c2, c3 = st.columns(3)
+c1.metric("Total Spend", f"${total_spend(f):,.2f}")
+c2.metric("Transactions", f"{expenses_count(f)}")
+tc, amt = top_category(f)
+c3.metric("Top Category", f"{tc}", delta=f"${amt:,.2f}")
 
-
-st.subheader("Monthly Revenue")
-mr = monthly_revenue(filtered)
+# -------- Charts --------
+st.subheader("Monthly Spend")
+mr = monthly_spend(f)
 if not mr.empty:
     st.line_chart(mr.set_index("month"))
 else:
-    st.info("No monthly revenue to display for the current filters.")
+    st.info("No data in this range.")
 
-st.subheader("Top Products")
-tp = top_products(filtered, 5)
-if not tp.empty:
-    st.bar_chart(tp.set_index("product"))
-else:
-    st.info("No top products to display for the current filters.")
+# -------- Table + quick category fixes --------
+st.subheader("Transactions")
+show_cols = ["date","description","merchant","amount","category_final","id"]
+st.dataframe(f[show_cols].sort_values("date", ascending=False), use_container_width=True)
 
+st.markdown("#### Fix categories")
+to_fix = f[f["category_final"].isna()][["id","description","merchant","amount"]].copy()
+to_fix["category"] = ""
+if not to_fix.empty:
+    edited = st.data_editor(to_fix, num_rows="dynamic", use_container_width=True, key="fixcat")
+    if st.button("Save category corrections"):
+        rows = edited.dropna(subset=["category"])[["id","category"]]
+        save_feedback(rows)
+        st.success("Saved. Reload the app to apply.")
 
-st.download_button("Download filtered CSV", filtered.to_csv(index=False), "filtered_sales.csv", "text/csv")
+# -------- Finance Chatbot --------
+#st.subheader("Finance Chatbot (beta)")
+#q = st.text_input("Ask a question (e.g., 'How much did I spend on Uber last month?')")
+#if q:
+#    st.write(answer_query(df, q))
+
+# -------- Export --------
+st.download_button(
+    "Download filtered CSV",
+    f.to_csv(index=False),
+    "filtered_expenses.csv",
+    "text/csv"
+)
